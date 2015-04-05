@@ -37,7 +37,7 @@ var Announcements = (function() {
 				tweet = data[count];
 			}
 
-			var announcement = new CustomEvent('annoucement', {detail: newTweets});
+			var announcement = new CustomEvent('announcement', {detail: newTweets});
 			document.dispatchEvent(announcement);
 		}
 
