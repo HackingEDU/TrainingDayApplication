@@ -1,29 +1,17 @@
 var Announcements = (function() {
-	//load api key before use
-	var KEY = '';
-	var SCREEN_NAME = 'hackingedusf';
-	var HEADERS = {
-		'User-Agent': 'HackingEDU Training Day',
-		'Authorization': 'Bearer '+KEY,
-		'Accept-Encoding': 'gzip'
-	};
+	var Announcement = function(key, appName, username) {
+		this.key = key;
+		this.appName = appName;
+		this.username = username;
+
+		this.headers = {
+			'User-Agent': appName,
+			'Authorization': 'Bearer '+key,
+			'Accept-Encoding': 'gzip'
+		};
+	}
 
 	var lastTweet = null;
-
-	var pollTwitter = function() {
-		var opts = { 
-			headers: HEADERS,
-			data: 'screen_name='+SCREEN_NAME+'&count=30',
-			type: 'GET',
-			success: reqSuccess,
-			error: reqError
-		};
-
-		$.ajax(
-			'https://api.twitter.com/1.1/statuses/user_timeline.json',
-			opts
-		);
-	};
 
 	//announcement event is fired when a new tweet is posted
 	var reqSuccess = function(data, textStatus, jqXHR) {
@@ -45,20 +33,33 @@ var Announcements = (function() {
 	};
 
 	var reqError = function(jqXHR, textStatus, errorThrown) {
-		//gotta let the user know request failed somehow
+		var error = new CustomEvent('announcement_error', {detail: 'Error updating feed.'});
+		document.dispatchEvent(error);
 	};
 
-	return {
-		init: function() {
-			window.setInterval(pollTwitter, 60000);
-		},
-
-		stop: function() {
-			window.clearInterval();
-		},
-
-		update: function() {
-			pollTwitter();
-		}
+	Announcement.prototype.init = function(minutes) {
+		window.setInterval(this.update, 60000*minutes);
 	};
-}());
+
+	Announcement.prototype.stop = function() {
+		window.clearInterval();
+	};
+
+	Announcement.prototype.update = function() {
+		var opts = { 
+			headers: this.headers,
+			data: 'screen_name='+this.username+'&count=30',
+			type: 'GET',
+			crossDomain: true,
+			success: reqSuccess,
+			error: reqError
+		};
+
+		$.ajax(
+			'https://api.twitter.com/1.1/statuses/user_timeline.json',
+			opts
+		);
+	}
+
+	return Announcement;
+})();

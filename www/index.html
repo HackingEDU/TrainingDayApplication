@@ -38,7 +38,7 @@
                 <li class="tabitem active"><a href="#box1">Announcements<span></span></a></li>
                 <li class="tabitem"><a href="#box2">Schedule<span></span></a></li>
                 <li class="tabitem"><a href="#box3">FAQ<span></span></a></li>
-                <li class="tabitem"><a href="#box4">Map<span></span></a></li>-
+                <li class="tabitem"><a href="#box4">Map<span></span></a></li>
             </ul>
         </div>
     </div>
@@ -233,9 +233,39 @@
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/tabs.js"></script>
+        <script type="text/javascript" src="js/announcements.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
         <script type="text/javascript">
             app.initialize();
+            var announcements = new Announcements('AAAAAAAAAAAAAAAAAAAAABJnfAAAAAAAoc1i10xV4M%2F5rT1KPTR1KsCBdKA%3DxFLpXFZh6B17KFkm7gJXZDaHm2TN3i72oExEnOpslNX0cHvvlV',
+              'HackingEDU Training Day',
+              'hackingedusf');
+            announcements.init(10); //refresh every 10 minutes
+
+            document.addEventListener('announcement', function(e) {
+              newAnnouncement(e.detail);
+            });
+
+            var tweetCard =             
+              '<div class="item"> \
+                <div class="itemhead"> \
+                    <img src="" width="70" height"70" /> \
+                    <h2><strong>HackingEDU</strong> @hackingedusf</h2> \
+                </div> \
+              </div>';
+
+            var newAnnouncement = function(tweet_list) {
+              for (var i = 0; i < tweet_list.length; i++) {
+                var tweet = tweet_list[i];
+                var tweetDisplay = $(tweetCard);
+                var imgUrl = tweet.user.profile_image_url.split('_normal');
+                imgUrl[0] += '.jpeg';
+                tweetDisplay.find('img').attr('src', imgUrl[0]);
+                tweetDisplay.append('<p>'+tweet.text+'</p>');
+                $('#box1').prepend(tweetDisplay);
+              }
+            }
         </script>
     </body>
 </html>
