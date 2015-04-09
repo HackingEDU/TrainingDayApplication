@@ -6,15 +6,15 @@ var Announcements = (function() {
 
 		this.headers = {
 			'User-Agent': appName,
-			'Authorization': 'Bearer '+key,
-			'Accept-Encoding': 'gzip'
+			'Accept-Encoding': 'gzip',
+			'Authorization': 'Bearer '+key
 		};
 	}
 
 	var lastTweet = null;
 
 	//announcement event is fired when a new tweet is posted
-	var reqSuccess = function(data, textStatus, jqXHR) {
+	var reqSuccess = function(data) {
 		if (lastTweet !== null && lastTweet.id !== data[0].id) {
 			var newTweets = [];
 			var tweet = data[0];
@@ -29,16 +29,30 @@ var Announcements = (function() {
 			document.dispatchEvent(announcement);
 		}
 
+		if (lastTweet === null) {
+			var announcement = new CustomEvent('announcement', {detail: data});
+			document.dispatchEvent(announcement);
+		}
+
 		lastTweet = data[0];
 	};
 
 	var reqError = function(jqXHR, textStatus, errorThrown) {
-		var error = new CustomEvent('announcement_error', {detail: 'Error updating feed.'});
+		var error = new CustomEvent('announcement_error', {detail: {
+			response: jqXHR.responseText,
+			text: textStatus,
+			error: errorThrown
+		}});
 		document.dispatchEvent(error);
 	};
 
 	Announcement.prototype.init = function(minutes) {
-		window.setInterval(this.update, 60000*minutes);
+		this.update();
+		
+		var that = this;
+		window.setInterval(function() {
+			that.update();
+		}, 60000*minutes);
 	};
 
 	Announcement.prototype.stop = function() {
@@ -49,8 +63,8 @@ var Announcements = (function() {
 		var opts = { 
 			headers: this.headers,
 			data: 'screen_name='+this.username+'&count=30',
-			type: 'GET',
-			crossDomain: true,
+			method: 'GET',
+			dataType: 'json',
 			success: reqSuccess,
 			error: reqError
 		};

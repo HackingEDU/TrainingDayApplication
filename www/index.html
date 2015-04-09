@@ -45,28 +45,6 @@
     <div class="content">
         <!-- Announcements / Twitter Feed -->
         <div id="box1" class="box show">
-            <div class="item">
-                <div class="itemhead">
-                    <img src="https://polymer-tut.appspot.com/images/avatar-01.svg" width="70" height"70" />
-                    <h2><strong>HackingEDU</strong> @hackingedusf</h2>
-                    <div class="heart">
-                        <svg viewBox="0 0 24 24" style="pointer-events: none; width: 24px; height: 24px; display: block;"><g id="favorite"><path d="M12,21.4L10.6,20C5.4,15.4,2,12.3,2,8.5C2,5.4,4.4,3,7.5,3c1.7,0,3.4,0.8,4.5,2.1C13.1,3.8,14.8,3,16.5,3C19.6,3,22,5.4,22,8.5c0,3.8-3.4,6.9-8.6,11.5L12,21.4z"></path></g></svg>
-                    </div>
-                </div>
-              <p>Our number one fan!!</p>
-              <p><strong>#LAHacks #edtech #hackathon</strong></p>
-            </div>
-            <div class="item">
-                <div class="itemhead">
-                    <img src="https://polymer-tut.appspot.com/images/avatar-05.svg" width="70" height"70" />
-                    <h2><strong>Major League Hacking</strong> @MLHacks</h2>
-                    <div class="heart">
-                        <svg viewBox="0 0 24 24" style="pointer-events: none; width: 24px; height: 24px; display: block;"><g id="favorite"><path d="M12,21.4L10.6,20C5.4,15.4,2,12.3,2,8.5C2,5.4,4.4,3,7.5,3c1.7,0,3.4,0.8,4.5,2.1C13.1,3.8,14.8,3,16.5,3C19.6,3,22,5.4,22,8.5c0,3.8-3.4,6.9-8.6,11.5L12,21.4z"></path></g></svg>
-                    </div>
-                </div>
-            <p>Who's ready?!?!? Best coast ~ west coast ~ @LAHacks</p>
-            <p><strong>#norcal #vs #socal #hackathon</strong></p>
-            </div>
         </div>
         <!-- Schedule -->
         <div id="box2" class="box">
@@ -260,10 +238,16 @@
                 var tweet = tweet_list[i];
                 var tweetDisplay = $(tweetCard);
                 var imgUrl = tweet.user.profile_image_url.split('_normal');
-                imgUrl[0] += '.jpeg';
-                tweetDisplay.find('img').attr('src', imgUrl[0]);
+                imgUrl = imgUrl.join('');
+                tweetDisplay.find('img').attr('src', imgUrl);
                 tweetDisplay.append('<p>'+tweet.text+'</p>');
+                var t = tweet.created_at;
+                t.replace('+0000', '-0700');
+                var time = new Date(Date.parse(t));
+                tweetDisplay.append('<p>'+time.toLocaleTimeString()+'</p>');
+                tweetDisplay.css('display', 'none');
                 $('#box1').prepend(tweetDisplay);
+                $($('#box1').find('.item')[0]).fadeIn(400);
               }
             }
         </script>
