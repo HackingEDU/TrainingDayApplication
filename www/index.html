@@ -44,7 +44,7 @@
     </div>
     <div class="content">
         <!-- Announcements / Twitter Feed -->
-        <div id="box1" class="box show">
+        <div id="box1" class="box show received">
         </div>
         <!-- Schedule -->
         <div id="box2" class="box">
@@ -228,16 +228,18 @@
             var announcements = new Announcements('AAAAAAAAAAAAAAAAAAAAABJnfAAAAAAAoc1i10xV4M%2F5rT1KPTR1KsCBdKA%3DxFLpXFZh6B17KFkm7gJXZDaHm2TN3i72oExEnOpslNX0cHvvlV',
               'HackingEDU Training Day',
               'hackingedusf');
-            announcements.init(10); //refresh every 10 minutes
+            $(function() {
+              document.addEventListener('announcement', function(e) {
+                newAnnouncement(e.detail);
+              });
 
-            document.addEventListener('announcement', function(e) {
-              newAnnouncement(e.detail);
+              announcements.init(10); //refresh every 10 minutes
             });
 
             var tweetCard =             
               '<div class="item"> \
                 <div class="itemhead"> \
-                    <img src="" width="70" height"70" /> \
+                    <img src="" width="70px" height="70px" /> \
                     <h2><strong>HackingEDU</strong> @hackingedusf</h2> \
                 </div> \
               </div>';

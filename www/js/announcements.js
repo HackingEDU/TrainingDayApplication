@@ -9,7 +9,7 @@ var Announcements = (function() {
 			'Accept-Encoding': 'gzip',
 			'Authorization': 'Bearer '+key
 		};
-	}
+	};
 
 	var lastTweet = null;
 
@@ -73,7 +73,7 @@ var Announcements = (function() {
 			'https://api.twitter.com/1.1/statuses/user_timeline.json',
 			opts
 		);
-	}
+	};
 
 	return Announcement;
 })();
